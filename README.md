@@ -14,7 +14,10 @@ This project is a Flask-based web application developed by Soham, designed to he
 ```
 ├── app.py                  # Main Flask application
 ├── requirements.txt        # Python dependencies
-├── templates/              # HTML templates
+├── statis/                 # Static folder
+│   ├── css                 # CSS Folder
+│   │   ├── style.css       # CSS styling (UI) file
+├── templates/              # HTML templates folder
 │   ├── index.html          # Homepage with image upload
 │   ├── edit.html           # Image editing and background selection
 │   ├── profile.html        # Placeholder (not actively used in main flow)
