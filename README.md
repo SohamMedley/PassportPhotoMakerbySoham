@@ -30,8 +30,8 @@ This project is a Flask-based web application developed by Soham, designed to he
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/passport-photo-maker-ai.git
-   cd passport-photo-maker-ai
+   git clone https://github.com/yourusername/PassportPhotoMakerbySoham.git
+   cd PassportPhotoMakerbySoham
    ```
 2. Create a virtual environment and activate it:
    ```bash
