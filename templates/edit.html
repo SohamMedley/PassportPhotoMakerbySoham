@@ -1,0 +1,455 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Your Passport Photo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 0.5s ease;
+    }
+    
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(79, 70, 229, 0.2);
+        border-top: 6px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+    }
+    
+    .loading-text {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+    
+    .photo-container {
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        background-color: #f0f0f0;
+        margin-bottom: 20px;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .photo-container img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .color-option {
+        position: relative;
+        cursor: pointer;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        height: 60px;
+        transition: all 0.3s ease;
+    }
+    
+    .color-option.active {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .color-option span {
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .preview-frame {
+        width: 100%;
+        height: 250px;
+        background-color: white;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: var(--box-shadow);
+    }
+    
+    .preview-frame img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 16px;
+        margin: 24px 0;
+    }
+    
+    .action-buttons button {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .action-buttons button i {
+        font-size: 1.2rem;
+    }
+    
+    .photo-dimensions {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="loading-overlay" id="loading-overlay">
+    <div class="spinner"></div>
+    <div class="loading-text">Processing your photo...</div>
+</div>
+
+<section class="edit-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Edit Your Passport Photo</h2>
+            <p>Choose a background color that meets passport requirements</p>
+        </div>
+        
+        <div class="edit-container">
+            <div class="edit-preview">
+                <div class="photo-container">
+                    <img id="passport-photo" src="{{ photo_url }}" alt="Passport Photo">
+                </div>
+                <div class="photo-dimensions">
+                    <p>Photo dimensions: <span id="photo-dimensions">35mm × 45mm</span></p>
+                </div>
+            </div>
+            
+            <div class="edit-options">
+                <div class="option-group">
+                    <h3>Background Color</h3>
+                    <p>Select a background color for your passport photo</p>
+                    
+                    <div class="color-options">
+                        <div class="color-option active" data-color="#FFFFFF" style="background-color: #FFFFFF;">
+                            <span>White</span>
+                        </div>
+                        <div class="color-option" data-color="#F5F5F5" style="background-color: #F5F5F5;">
+                            <span>Light Gray</span>
+                        </div>
+                        <div class="color-option" data-color="#E0F7FA" style="background-color: #E0F7FA;">
+                            <span>Light Blue</span>
+                        </div>
+                        <div class="color-option" data-color="#F9FBE7" style="background-color: #F9FBE7;">
+                            <span>Cream</span>
+                        </div>
+                        <div class="color-option" data-color="#E8F5E9" style="background-color: #E8F5E9;">
+                            <span>Light Green</span>
+                        </div>
+                        <div class="color-option" data-color="#87CEEB" style="background-color: #87CEEB;">
+                            <span>Sky Blue</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="option-group">
+                    <h3>Photo Preview</h3>
+                    <div class="preview-container">
+                        <div class="preview-frame">
+                            <img id="final-preview" src="{{ photo_url }}" alt="Final Preview">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="download-btn" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Download Photo
+                    </button>
+                    <button id="save-btn" class="btn btn-outline">
+                        <i class="fas fa-save"></i> Save to Account
+                    </button>
+                </div>
+                
+                <div class="photo-info">
+                    <p><i class="fas fa-info-circle"></i> This photo meets the requirements for Indian passport photos.</p>
+                    <p><i class="fas fa-lock"></i> Your photo will be automatically deleted from our servers after 24 hours.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Hide loading overlay after 2 seconds with animation
+        setTimeout(function() {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+            }, 500);
+        }, 2000);
+        
+        // Background color selection with animation
+        const colorOptions = document.querySelectorAll('.color-option');
+        const passportPhoto = document.getElementById('passport-photo');
+        const finalPreview = document.getElementById('final-preview');
+        let currentColor = '#FFFFFF'; // Default color
+        
+        // Apply initial background color
+        applyBackgroundColor('#FFFFFF');
+        
+        colorOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Show loading overlay
+                const loadingOverlay = document.getElementById('loading-overlay');
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.opacity = '1';
+                
+                // Remove active class from all options
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                
+                // Add active class to selected option
+                this.classList.add('active');
+                
+                // Get selected color
+                const color = this.getAttribute('data-color');
+                currentColor = color;
+                
+                // Apply background color
+                applyBackgroundColor(color);
+            });
+        });
+        
+        function applyBackgroundColor(color) {
+            // Create form data
+            const formData = new FormData();
+            formData.append('background_color', color);
+            
+            // Send request to server
+            fetch('/apply_background', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update images with new background
+                    const newPhotoUrl = data.photo_url + '?t=' + new Date().getTime(); // Add timestamp to prevent caching
+                    
+                    // Create new image objects to ensure they're fully loaded
+                    const newPassportImg = new Image();
+                    const newPreviewImg = new Image();
+                    
+                    // Set up load handlers
+                    let imagesLoaded = 0;
+                    const totalImages = 2;
+                    
+                    function imageLoaded() {
+                        imagesLoaded++;
+                        if (imagesLoaded === totalImages) {
+                            // Both images loaded, hide loading overlay
+                            const loadingOverlay = document.getElementById('loading-overlay');
+                            loadingOverlay.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingOverlay.style.display = 'none';
+                            }, 500);
+                            
+                            // Add animation to the photos
+                            passportPhoto.style.transform = 'scale(0.98)';
+                            finalPreview.style.transform = 'scale(0.98)';
+                            
+                            setTimeout(() => {
+                                passportPhoto.style.transform = 'scale(1)';
+                                finalPreview.style.transform = 'scale(1)';
+                            }, 150);
+                        }
+                    }
+                    
+                    // Set up load events
+                    newPassportImg.onload = imageLoaded;
+                    newPreviewImg.onload = imageLoaded;
+                    
+                    // Set sources to trigger loading
+                    newPassportImg.src = newPhotoUrl;
+                    newPreviewImg.src = newPhotoUrl;
+                    
+                    // Update the DOM elements
+                    passportPhoto.src = newPhotoUrl;
+                    finalPreview.src = newPhotoUrl;
+                } else {
+                    // Error handling
+                    alert('Error applying background: ' + data.message);
+                    
+                    // Hide loading overlay
+                    const loadingOverlay = document.getElementById('loading-overlay');
+                    loadingOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 500);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while applying the background color.');
+                
+                // Hide loading overlay
+                const loadingOverlay = document.getElementById('loading-overlay');
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.style.display = 'none';
+                }, 500);
+            });
+        }
+        
+        // Download button with animation
+        document.getElementById('download-btn').addEventListener('click', function() {
+            // Add loading animation to button
+            const originalText = this.innerHTML;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing...';
+            this.disabled = true;
+            
+            // In a real application, this would trigger a server request to generate the final image
+            // For demo purposes, we'll simulate a download
+            setTimeout(() => {
+                // Create a form to send to the server
+                const form = new FormData();
+                form.append('photo_url', finalPreview.src);
+                form.append('background_color', currentColor);
+                
+                fetch('/download_photo', {
+                    method: 'POST',
+                    body: form
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Create a link to download the image
+                        const link = document.createElement('a');
+                        link.href = data.download_url;
+                        link.download = 'passport_photo.jpg';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
+                        // Show success message
+                        this.innerHTML = '<i class="fas fa-check"></i> Downloaded!';
+                        
+                        // Reset button after 2 seconds
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        alert('Error: ' + data.message);
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while downloading the photo.');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+            }, 1000);
+        });
+        
+        // Save to account button with animation
+        document.getElementById('save-btn').addEventListener('click', function() {
+            // Check if user is logged in
+            const isLoggedIn = {{ 'true' if session.user else 'false' }};
+            
+            if (isLoggedIn) {
+                // Add loading animation to button
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+                this.disabled = true;
+                
+                // Create a form to send to the server
+                const form = new FormData();
+                form.append('photo_url', finalPreview.src);
+                form.append('background_color', currentColor);
+                
+                // Save photo to user account
+                fetch('/save_photo', {
+                    method: 'POST',
+                    body: form
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        this.innerHTML = '<i class="fas fa-check"></i> Saved!';
+                        
+                        // Reset button after 2 seconds
+                        setTimeout(() => {
+                            this.innerHTML = originalText;
+                            this.disabled = false;
+                        }, 2000);
+                    } else {
+                        alert('Error: ' + data.message);
+                        this.innerHTML = originalText;
+                        this.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the photo.');
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                });
+            } else {
+                // Redirect to login page
+                if (confirm('You need to log in to save photos to your account. Would you like to log in now?')) {
+                    window.location.href = '/login?redirect=edit';
+                }
+            }
+        });
+        
+        // Add animation to the loading overlay
+        const spinner = document.querySelector('.spinner');
+        spinner.style.animation = 'rotate 1s linear infinite';
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}Login to PassportPro{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-form-container">
+                <div class="auth-header">
+                    <h2>Welcome Back</h2>
+                    <p>Log in to access your saved passport photos</p>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <div class="auth-form-wrapper">
+                    <form id="login-form" class="auth-form active" action="/login" method="post">
+                        <div class="form-group">
+                            <label for="login-email">Email Address</label>
+                            <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div id="login-otp-container" class="form-group" style="display: none;">
+                            <label for="login-otp">OTP Code</label>
+                            <input type="text" id="login-otp" name="otp" placeholder="Enter OTP sent to your email" maxlength="6">
+                            <p class="form-help">We've sent a 6-digit code to your email</p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" id="login-request-otp" class="btn btn-primary btn-block">Continue</button>
+                            <button type="submit" id="login-submit" class="btn btn-primary btn-block" style="display: none;">Login</button>
+                        </div>
+                    </form>
+                    
+                    <form id="signup-form" class="auth-form" action="/signup" method="post" style="display: none;">
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" id="signup-name" name="name" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-email">Email Address</label>
+                            <input type="email" id="signup-email" name="email" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div id="signup-otp-container" class="form-group" style="display: none;">
+                            <label for="signup-otp">OTP Code</label>
+                            <input type="text" id="signup-otp" name="otp" placeholder="Enter OTP sent to your email" maxlength="6">
+                            <p class="form-help">We've sent a 6-digit code to your email</p>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" id="signup-request-otp" class="btn btn-primary btn-block">Continue</button>
+                            <button type="submit" id="signup-submit" class="btn btn-primary btn-block" style="display: none;">Create Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="auth-info">
+                <div class="auth-info-content">
+                    <h3>Benefits of Creating an Account</h3>
+                    <ul class="benefits-list">
+                        <li>
+                            <i class="fas fa-save"></i>
+                            <div>
+                                <h4>Save Your Photos</h4>
+                                <p>Store up to 10 passport photos in your account</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-history"></i>
+                            <div>
+                                <h4>Access History</h4>
+                                <p>Access your previously created passport photos anytime</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-bell"></i>
+                            <div>
+                                <h4>Get Notifications</h4>
+                                <p>Receive updates about new features and improvements</p>
+                            </div>
+                        </li>
+                        <li>
+                            <i class="fas fa-star"></i>
+                            <div>
+                                <h4>Premium Features</h4>
+                                <p>Access to additional editing tools and features</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Tab switching
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        
+        authTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs
+                authTabs.forEach(t => t.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                
+                // Show corresponding form
+                if (this.getAttribute('data-tab') === 'login') {
+                    loginForm.style.display = 'block';
+                    signupForm.style.display = 'none';
+                } else {
+                    loginForm.style.display = 'none';
+                    signupForm.style.display = 'block';
+                }
+            });
+        });
+        
+        // Login OTP request
+        const loginRequestOTP = document.getElementById('login-request-otp');
+        const loginOTPContainer = document.getElementById('login-otp-container');
+        const loginSubmit = document.getElementById('login-submit');
+        const loginEmail = document.getElementById('login-email');
+        
+        loginRequestOTP.addEventListener('click', function() {
+            if (!loginEmail.value) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            // Simulate OTP request
+            alert(`OTP sent to ${loginEmail.value}`);
+            
+            // Show OTP input and submit button
+            loginOTPContainer.style.display = 'block';
+            loginRequestOTP.style.display = 'none';
+            loginSubmit.style.display = 'block';
+        });
+        
+        // Signup OTP request
+        const signupRequestOTP = document.getElementById('signup-request-otp');
+        const signupOTPContainer = document.getElementById('signup-otp-container');
+        const signupSubmit = document.getElementById('signup-submit');
+        const signupEmail = document.getElementById('signup-email');
+        const signupName = document.getElementById('signup-name');
+        
+        signupRequestOTP.addEventListener('click', function() {
+            if (!signupName.value) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            if (!signupEmail.value) {
+                alert('Please enter your email address');
+                return;
+            }
+            
+            // Simulate OTP request
+            alert(`OTP sent to ${signupEmail.value}`);
+            
+            // Show OTP input and submit button
+            signupOTPContainer.style.display = 'block';
+            signupRequestOTP.style.display = 'none';
+            signupSubmit.style.display = 'block';
+        });
+    });
+</script>
+{% endblock %}
+
