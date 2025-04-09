@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Passport Photo Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Indian Passport Photo Generator</h1>
+            <p>Create professional passport photos with custom backgrounds</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-content" id="upload-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p>Drag & drop your photo here or</p>
+                        <label for="file-upload" class="custom-file-upload">
+                            Choose File
+                        </label>
+                        <input id="file-upload" type="file" accept="image/*">
+                    </div>
+                    <img id="preview-image" class="preview-image hidden">
+                </div>
+                <div class="loading-indicator hidden" id="loading-indicator">
+                    <div class="spinner"></div>
+                    <p>Processing your image...</p>
+                </div>
+            </div>
+
+            <div class="editor-section hidden" id="editor-section">
+                <div class="photo-preview">
+                    <div class="photo-container">
+                        <img id="processed-image" src="/placeholder.svg">
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <h3>Select Background Color</h3>
+                    <div class="color-options">
+                        <button class="color-btn" data-color="red" style="background: linear-gradient(135deg, #ff5f6d, #ffc371)"></button>
+                        <button class="color-btn" data-color="blue" style="background: linear-gradient(135deg, #2980b9, #6dd5fa)"></button>
+                        <button class="color-btn" data-color="black" style="background: linear-gradient(135deg, #232526, #414345)"></button>
+                        <button class="color-btn" data-color="white" style="background: linear-gradient(135deg, #e0e0e0, #ffffff)"></button>
+                        <button class="color-btn" data-color="cyan" style="background: linear-gradient(135deg, #00d2ff, #3a7bd5)"></button>
+                        <button class="color-btn" data-color="green" style="background: linear-gradient(135deg, #56ab2f, #a8e063)"></button>
+                        <button class="color-btn" data-color="purple" style="background: linear-gradient(135deg, #8e2de2, #4a00e0)"></button>
+                        <button class="color-btn" data-color="pink" style="background: linear-gradient(135deg, #f953c6, #b91d73)"></button>
+                        <button class="color-btn" data-color="maroon" style="background: linear-gradient(135deg, #8e0e00, #1f1c18)"></button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="reset-btn" class="btn secondary-btn">Reset</button>
+                        <button id="download-btn" class="btn primary-btn">Download Photo</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Indian Passport Photo Generator. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
